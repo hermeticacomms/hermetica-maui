@@ -1,0 +1,21 @@
+name: ci
+on:
+  push: { branches: [main] }
+  pull_request:
+permissions: { contents: read }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with: { dotnet-version: '10.0.x' }
+      - run: dotnet test tests/Hermetica.Maui.Tests -c Release # the shared core, on plain .NET (C# 9, as Unity compiles it)
+  pack:
+    runs-on: macos-latest # the iOS target needs Xcode
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with: { dotnet-version: '10.0.x' }
+      - run: dotnet workload install maui
+      - run: dotnet pack src/Hermetica.Maui -c Release -o out

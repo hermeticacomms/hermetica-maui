@@ -1,0 +1,30 @@
+# Push a tag matching the <Version> in src/Hermetica.Maui/Hermetica.Maui.csproj ("v0.1.0") to publish Hermeticacomms.Hermetica.Maui
+# to NuGet. Uses NuGet trusted publishing. One-time setup on nuget.org: under Trusted Publishing add a GitHub Actions policy for
+# repository hermeticacomms/hermetica-maui, workflow release.yml, environment nuget; then add the repo secret NUGET_USER = the
+# nuget.org user name that owns the policy.
+name: release
+on:
+  push: { tags: ['v*'] }
+permissions: { contents: read }
+jobs:
+  release:
+    runs-on: macos-latest
+    environment: nuget
+    permissions: { contents: write, id-token: write, attestations: write }
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with: { dotnet-version: '10.0.x' }
+      - run: grep -q "<Version>${GITHUB_REF_NAME#v}</Version>" src/Hermetica.Maui/Hermetica.Maui.csproj
+      - run: dotnet test tests/Hermetica.Maui.Tests -c Release
+      - run: dotnet workload install maui
+      - run: dotnet pack src/Hermetica.Maui -c Release -o out
+      - uses: actions/attest-build-provenance@v3
+        with: { subject-path: 'out/*.nupkg' }
+      - uses: NuGet/login@v1
+        id: login
+        with: { user: '${{ secrets.NUGET_USER }}' }
+      - run: dotnet nuget push out/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+        env: { NUGET_API_KEY: '${{ steps.login.outputs.NUGET_API_KEY }}' }
+      - run: gh release create "$GITHUB_REF_NAME" out/*.nupkg --repo "$GITHUB_REPOSITORY" --generate-notes
+        env: { GH_TOKEN: '${{ github.token }}' }
