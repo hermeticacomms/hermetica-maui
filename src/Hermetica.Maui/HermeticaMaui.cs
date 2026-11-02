@@ -49,9 +49,9 @@ namespace Hermetica.Maui
             builder.ConfigureLifecycleEvents(events =>
             {
 #if ANDROID
-                events.AddAndroid(a => a.OnStop(_ => _ = client.FlushAsync()));
+                events.AddAndroid(a => a.OnStop(activity => _ = client.FlushAsync()));
 #elif IOS
-                events.AddiOS(i => i.DidEnterBackground(_ => _ = client.FlushAsync()));
+                events.AddiOS(i => i.DidEnterBackground(app => _ = client.FlushAsync()));
 #endif
             });
             return builder;
