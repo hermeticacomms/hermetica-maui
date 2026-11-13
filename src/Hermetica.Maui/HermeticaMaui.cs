@@ -35,7 +35,7 @@ namespace Hermetica.Maui
             var o = new HermeticaOptions
             {
                 Platform = DeviceInfo.Current.Platform == DevicePlatform.iOS ? "ios" : "android",
-                SdkVersion = "maui-0.1.0",
+                SdkVersion = "maui-0.4.0",
                 Device = new DeviceMetadata
                 {
                     DeviceModel = DeviceInfo.Current.Model, OsName = DeviceInfo.Current.Platform.ToString().ToLowerInvariant(), OsVersion = DeviceInfo.Current.VersionString,

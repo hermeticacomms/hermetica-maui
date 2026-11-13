@@ -9,7 +9,7 @@
     <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net10.0-ios'">15.0</SupportedOSPlatformVersion>
     <RootNamespace>Hermetica.Maui</RootNamespace>
     <PackageId>Hermeticacomms.Hermetica.Maui</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.4.0</Version>
     <Authors>Hermetica</Authors>
     <Description>Hermetica for .NET MAUI apps: events, identity, consent, push tokens and in-app messages, with an offline queue and idempotent retries.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
